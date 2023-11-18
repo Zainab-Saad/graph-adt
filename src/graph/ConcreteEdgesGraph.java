@@ -38,20 +38,22 @@ public class ConcreteEdgesGraph implements Graph<String>
     
     @Override public int set(String source, String target, int weight) 
     {
+        int temp;
         for (Edge edge:edges)
         {
             // if edge exists
             if (edge.source.equals(source) && edge.destination.equals(target))
             {
+                temp = edge.weight;
                 // updating the weight of the already existing edge
                 edge.weight = weight;
-                return edge.weight;
+                return temp;
             }
         }
         // if edge does not exist, create one
         Edge edge = new Edge(source, target, weight);
         edges.add(edge);
-        return edge.weight;
+        return 0;
     }
     
     @Override public boolean remove(String vertex) 
