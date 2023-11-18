@@ -58,7 +58,23 @@ public class ConcreteEdgesGraph implements Graph<String>
     
     @Override public boolean remove(String vertex) 
     {
-        return vertices.remove(vertex);
+        boolean vertex_deleted = false;
+        boolean paths_deleted = false;
+
+        // removing the vertex from the list of vertices
+        vertex_deleted = vertices.remove(vertex);
+
+        // removing all paths having that vertex
+        for (Edge edge: edges)
+        {
+            if (edge.source.equals(vertex) || edge.destination.equals(vertex))
+                edges.remove(edge);
+            paths_deleted = true;
+        }
+
+        if (paths_deleted && vertex_deleted)
+            return true;
+        return false;
     }
     
     @Override public Set<String> vertices() 
@@ -122,6 +138,11 @@ class Edge
     {
         this.source = source;
         this.destination = destination;
+        this.weight = weight;
+    }
+
+    void setWeight(int weight)
+    {
         this.weight = weight;
     }
     

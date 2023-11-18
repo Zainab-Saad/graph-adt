@@ -55,7 +55,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
                 {
                     temp = vertex.paths.get(target);
                     if (weight != 0)
-                        vertex.paths.put(target, weight); 
+                        vertex.paths.replace(target, weight); 
                     else
                         vertex.paths.remove(target);
                     
@@ -72,32 +72,63 @@ public class ConcreteVerticesGraph implements Graph<String> {
     
     @Override public boolean remove(String vertex) 
     {
+        boolean sources_deleted = false;
+        boolean targets_deleted = false;
         for (Vertex v:vertices)
         {
             // if the vertex exists
             if (v.label.equals(vertex))
             {
-                
+                // clearing all target paths
+                v.paths.clear();
+                targets_deleted = true;
             }
+            
+            // or if the vertex is the destination of some path leading up from a vertex
+            else if (v.paths.keySet().contains(vertex))
+                v.paths.remove(vertex);
         }
+        if (targets_deleted && sources_deleted)
+            return true;
+        return false;
     }
     
     @Override public Set<String> vertices() 
     {
-        if (this.vertices.isEmpty())
-        {
-        	System.out.println("expected empty() graph to have no vertices");
-        }s
+        Set<String> v = new HashSet<String>();
+        for (Vertex vertex:vertices)
+            v.add(vertex.label);
+        
+        return v;
     }
     
     @Override public Map<String, Integer> sources(String target) 
     {
-        throw new RuntimeException("not implemented");
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (Vertex vertex:vertices)
+        {
+            // get all the destinations from the vertex
+            Set<String> all_targets = vertex.paths.keySet();
+            for(String t:all_targets)
+            {
+                // checking if the target matches the specified target
+                if (t.equals(target))
+                    map.put(vertex.label, vertex.paths.get(target));
+            }
+        }
+        return map;
     }
     
     @Override public Map<String, Integer> targets(String source) 
     {
-        throw new RuntimeException("not implemented");
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (Vertex vertex:vertices)
+        {
+            // if the vertex is the source vertex
+            if (vertex.label.equals(source))
+                map.putAll(vertex.paths);
+        }
+        return map;
     }
     
     // TODO toString()
