@@ -74,21 +74,32 @@ public class ConcreteVerticesGraph implements Graph<String> {
     {
         boolean sources_deleted = false;
         boolean targets_deleted = false;
-        for (Vertex v:vertices)
+        
+//      copy the elements into another list
+        List<Vertex> tempVertices = new ArrayList<Vertex>();
+        for (Vertex v : vertices) {
+        	tempVertices.add(v);
+        }
+        
+        for (Vertex v: tempVertices)
         {
             // if the vertex exists
             if (v.label.equals(vertex))
             {
                 // clearing all target paths
                 v.paths.clear();
+                vertices.remove(v);
                 targets_deleted = true;
             }
             
             // or if the vertex is the destination of some path leading up from a vertex
-            else if (v.paths.keySet().contains(vertex))
-                v.paths.remove(vertex);
+            else if (v.paths.keySet().contains(vertex)) {
+            	v.paths.remove(vertex);
+            	vertices.remove(v);
+            	sources_deleted = true;
+            }
         }
-        if (targets_deleted && sources_deleted)
+        if (targets_deleted || sources_deleted)
             return true;
         return false;
     }
