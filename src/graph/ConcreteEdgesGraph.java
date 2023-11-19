@@ -63,16 +63,26 @@ public class ConcreteEdgesGraph implements Graph<String>
 
         // removing the vertex from the list of vertices
         vertex_deleted = vertices.remove(vertex);
+        
+//        copy the edges
+        List<Edge> edgesCopied = new ArrayList<Edge>();
+        for (Edge edge: edges) {
+        	edgesCopied.add(edge);
+        }
 
         // removing all paths having that vertex
-        for (Edge edge: edges)
+        for (Edge edge: edgesCopied)
         {
             if (edge.source.equals(vertex) || edge.destination.equals(vertex))
-                edges.remove(edge);
+            {
+            	edges.remove(edge);    
+            	vertices.remove(edge.source);
+            	vertices.remove(edge.destination);
+            }
             paths_deleted = true;
         }
 
-        if (paths_deleted && vertex_deleted)
+        if (paths_deleted || vertex_deleted)
             return true;
         return false;
     }
