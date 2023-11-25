@@ -4,9 +4,12 @@
 package poet;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.*;
 
 import graph.Graph;
+import graph.ConcreteVerticesGraph;
 
 /**
  * A graph-based poetry generator.
@@ -50,14 +53,14 @@ import graph.Graph;
  * You MUST use Graph in your rep, but otherwise the implementation of this
  * class is up to you.
  */
-public class GraphPoet {
-    
-    private final Graph<String> graph = Graph.empty();
+public class GraphPoet 
+{    
+    private final Graph<String> graph = new ConcreteVerticesGraph();
     
     // Abstraction function:
     //   TODO
     // Representation invariant:
-    //   TODO
+    //   TODO 
     // Safety from rep exposure:
     //   TODO
     
@@ -67,8 +70,38 @@ public class GraphPoet {
      * @param corpus text file from which to derive the poet's affinity graph
      * @throws IOException if the corpus file cannot be found or read
      */
-    public GraphPoet(File corpus) throws IOException {
-        throw new RuntimeException("not implemented");
+    public GraphPoet(File corpus) throws IOException 
+    {
+        List<String> sentences = new ArrayList<String>();
+        // reading all the sentences from the file
+        try 
+        {
+            File myObj = new File("src/poet/mugar-omni-theater.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine())
+              sentences.add(myReader.nextLine());
+            myReader.close();
+        } 
+        catch (FileNotFoundException e) 
+        {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        // creating graph
+        for (String sentence:sentences)
+        {
+            String[] words = sentence.split(" ");
+            // creating the list of vertices
+            for (int i=0; i<words.length; i++)
+                // creating a new vertex for each unique word
+                graph.add(words[i]);
+            
+            
+            // creating a path between each adjacent word
+            for (int i=0; i<words.length; i=i+2)
+                ((ConcreteVerticesGraph) graph).setOnce(words[i], words[i+1]);    
+        }
     }
     
     // TODO checkRep
@@ -79,10 +112,10 @@ public class GraphPoet {
      * @param input string from which to create the poem
      * @return poem (as described above)
      */
-    public String poem(String input) {
-        throw new RuntimeException("not implemented");
+    public String poem(String input) 
+    {
+        return null;
     }
     
-    // TODO toString()
-    
+    // TODO toString() 
 }
