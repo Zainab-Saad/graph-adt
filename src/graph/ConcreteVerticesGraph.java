@@ -122,7 +122,7 @@ public class ConcreteVerticesGraph implements Graph<String>
         for (String Path:Paths)
         {
             // if path to the target already exists
-            if (vertex.paths.get(Path).toLowerCase().equals(target.toLowerCase()))
+            if (vertex.paths.get(Path).toString().toLowerCase().equals(target.toLowerCase()))
             // increase the weight
                 vertex.paths.replace(target, vertex.paths.get(target)+1);
             return vertex.paths.get(target);
