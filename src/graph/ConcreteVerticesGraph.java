@@ -122,16 +122,19 @@ public class ConcreteVerticesGraph implements Graph<String>
         for (String Path:Paths)
         {
             // if path to the target already exists
-            if (vertex.paths.get(Path).toString().toLowerCase().equals(target.toLowerCase()))
-            // increase the weight
-                vertex.paths.replace(target, vertex.paths.get(target)+1);
-            return vertex.paths.get(target);
+            if (Path.toLowerCase().equals(target.toLowerCase())) {
+            	
+            	// increase the weight
+            	vertex.paths.replace(target, vertex.paths.get(target)+1);
+            	return vertex.paths.get(target);
+            }
         }
         
         // if path doesn't already exist, create the path with weight 1
         vertex.paths.put(target, count);
         // also add the target in the destinations (list) of the source
         vertex.destinations.add(target);
+        
 
         return count;
     }
@@ -177,11 +180,15 @@ public class ConcreteVerticesGraph implements Graph<String>
     // TODO toString()
     public void printGraph()
     {
+    	
+    	
         for (Vertex vertex:vertices)
-        {
-            for (String destination:vertex.destinations)
-                System.out.println(vertex + " -> "+ destination);
-            System.out.println();
+        {	
+        	for (Map.Entry<String, Integer> entry : vertex.paths.entrySet()) {
+                String key = entry.getKey();
+                Integer value = entry.getValue();
+                System.out.println("source = " + vertex.label + ", target = " + key + ", weight = " + value);
+            }
         }
 
         return;

@@ -100,8 +100,10 @@ public class GraphPoet
             
             // creating a path between each adjacent word
             for (int i=0; i<words.length-1; i++) {
-            	((ConcreteVerticesGraph) graph).setOnce(words[i], words[i+1]);    
+            	((ConcreteVerticesGraph) graph).setOnce(words[i], words[i+1]);
             }
+//            uncomment the below line for debugging
+//            ((ConcreteVerticesGraph) graph).printGraph();
         }
     }
     
@@ -115,7 +117,43 @@ public class GraphPoet
      */
     public String poem(String input) 
     {
-        return null;
+    	List<String> poem = new ArrayList<String> ();
+    	String[] inputList = input.split(" ");
+    	int i = 0;
+    	for (i = 0; i < inputList.length-1; i++) {
+    		
+    		boolean found = false;
+    		
+    		Map<String, Integer> targets = ((ConcreteVerticesGraph)graph).targets(inputList[i].toLowerCase());
+    		for (Map.Entry<String, Integer> entry : targets.entrySet()) {
+    			
+                String key = entry.getKey();
+                
+                Map<String, Integer> targetSub = ((ConcreteVerticesGraph)graph).targets(key);
+                
+                for (Map.Entry<String, Integer> entrySub : targetSub.entrySet()) {
+                	String keySub = entrySub.getKey();
+                	
+                	if (keySub.equals(inputList[i+1])) {
+                		
+                		poem.add(inputList[i]);
+                		poem.add(key);
+                		
+                		found = true;
+                		break;
+                		
+                	}
+                }
+                if (found) {
+                	break;
+                }
+            }
+    		if (!found) {
+    			poem.add(inputList[i]);
+    		}
+        }
+    	poem.add(inputList[inputList.length - 1]);
+        return String.join(" ", poem);
     }
     
     // TODO toString() 
