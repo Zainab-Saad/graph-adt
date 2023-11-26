@@ -53,6 +53,16 @@ public interface Graph<L> {
      *         edge
      */
     public int set(L source, L target, int weight);
+
+    /**
+     * Add or change the occurence of an edge
+     * If the edge already exists, increment its weight by 1
+     * If the edge doesn't exist, create an edge and assign it the weight equal to 1
+     * @param source label of the source vertex
+     * @param target label of the target vertex
+     * @return the weight of the edge
+     */
+    //public int setOnce(L source, L target);
     
     /**
      * Remove a vertex from this graph; any edges to or from the vertex are

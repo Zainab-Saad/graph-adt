@@ -10,7 +10,8 @@ import java.util.*;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteVerticesGraph implements Graph<String> {
+public class ConcreteVerticesGraph implements Graph<String> 
+{
     
     private final List<Vertex> vertices = new ArrayList<>();
     
@@ -25,12 +26,12 @@ public class ConcreteVerticesGraph implements Graph<String> {
     
     // TODO checkRep
     
-    @Override public boolean add(String vertex) 
+    public boolean add(String vertex) 
     {
         for (Vertex v:vertices)
         {
             // if vertex already exists
-            if (v.label.equals(vertex))
+            if (v.label.toLowerCase().equals(vertex.toLowerCase()))
                 return false;
         }
 
@@ -40,7 +41,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return true;
     }
     
-    @Override public int set(String source, String target, int weight) 
+    public int set(String source, String target, int weight)  
     {
         int temp = 0;
 
@@ -70,7 +71,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return temp;
     }
     
-    @Override public boolean remove(String vertex) 
+    public boolean remove(String vertex) 
     {
         boolean sources_deleted = false;
         boolean targets_deleted = false;
@@ -104,7 +105,41 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return false;
     }
     
-    @Override public Set<String> vertices() 
+    // to set an edge once with number of occurrences as weight
+    public int setOnce(String source, String target)
+    {
+        int count = 1;
+        Vertex vertex = null;
+        // finding the source vertex
+        for (Vertex v:vertices)
+        {
+            if (v.label.toLowerCase().equals(source.toLowerCase()))
+                vertex = v;
+        }
+
+        // if the path already exists
+        Set<String> Paths = vertex.paths.keySet();
+        for (String Path:Paths)
+        {
+            // if path to the target already exists
+            if (Path.toLowerCase().equals(target.toLowerCase())) {
+            	
+            	// increase the weight
+            	vertex.paths.replace(target, vertex.paths.get(target)+1);
+            	return vertex.paths.get(target);
+            }
+        }
+        
+        // if path doesn't already exist, create the path with weight 1
+        vertex.paths.put(target, count);
+        // also add the target in the destinations (list) of the source
+        vertex.destinations.add(target);
+        
+
+        return count;
+    }
+
+    public Set<String> vertices() 
     {
         Set<String> v = new HashSet<String>();
         for (Vertex vertex:vertices)
@@ -113,7 +148,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return v;
     }
     
-    @Override public Map<String, Integer> sources(String target) 
+    public Map<String, Integer> sources(String target) 
     {
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (Vertex vertex:vertices)
@@ -130,7 +165,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return map;
     }
     
-    @Override public Map<String, Integer> targets(String source) 
+    public Map<String, Integer> targets(String source) 
     {
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (Vertex vertex:vertices)
@@ -143,7 +178,21 @@ public class ConcreteVerticesGraph implements Graph<String> {
     }
     
     // TODO toString()
-    
+    public void printGraph()
+    {
+    	
+    	
+        for (Vertex vertex:vertices)
+        {	
+        	for (Map.Entry<String, Integer> entry : vertex.paths.entrySet()) {
+                String key = entry.getKey();
+                Integer value = entry.getValue();
+                System.out.println("source = " + vertex.label + ", target = " + key + ", weight = " + value);
+            }
+        }
+
+        return;
+    }
 }
 
 /**
@@ -158,16 +207,9 @@ class Vertex {
     
     // TODO fields
     String label;
-    // hashMap containing each destination the vertex leads to with its weight as value
+    // hashMap containing each destination the vertex leads to with its weight
     Map<String, Integer> paths = new HashMap<String, Integer>();
     List<String> destinations = new ArrayList<String>();
-    
-    // Abstraction function:
-    //   TODO
-    // Representation invariant:
-    //   TODO
-    // Safety from rep exposure:
-    //   TODO
     
     // TODO constructor
     Vertex(String label)
@@ -185,11 +227,29 @@ class Vertex {
     // TODO checkRep
     
     // TODO methods
-    // add a new path
+
+    // add a new path 
     public void addPath(String target, int weight)
     {
         paths.put(target, weight);
     }
+
+    // add a new path if one doesnt already exist
+    public int addPath(String target)
+    {
+        int count = 1;
+        // if the path already exists
+        if (paths.keySet().contains(target))
+        {
+            // increase the weight
+            paths.replace(target, paths.get(target)+1);
+            return paths.get(target);
+        }
+        // if path doesn't already exist, create the path with weight 1
+        paths.put(target, count);
+        return count;
+    }
+
 
     // get list of all destinations from that vertex
     public Set<String> destinations()
