@@ -99,8 +99,9 @@ public class GraphPoet
             
             
             // creating a path between each adjacent word
-            for (int i=0; i<words.length; i=i+2)
-                ((ConcreteVerticesGraph) graph).setOnce(words[i], words[i+1]);    
+            for (int i=0; i<words.length-1; i++) {
+            	((ConcreteVerticesGraph) graph).setOnce(words[i], words[i+1]);    
+            }
         }
     }
     
